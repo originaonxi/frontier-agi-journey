@@ -1,0 +1,11 @@
+# MEM1 vs ASM: Hypotheses
+
+1. **ASM outperforms MEM1 on cross-session tasks.** MEM1's RL-trained memory gating operates within a single episode (task horizon). ASM's anchor bank persists across 6 monthly sessions (Oct 2025–Mar 2026), enabling December's quality-over-quantity insight to inform March scoring. MEM1 has no mechanism for this. Falsifiable: if MEM1-style within-session compression scores equally well on prospects requiring cross-session context (e.g., using Dec's 10.5x efficiency signal), this hypothesis fails.
+
+2. **MEM1 achieves higher compression ratios but loses causal structure.** MEM1 reduces context by ~60% via learned gating. ASM stores only 46 anchors from 2,452 leads (98.1% compression) but preserves typed causal links (FINISH, DEPENDENCY, EXCEPTION). Falsifiable: if MEM1-compressed summaries retain enough structure to distinguish high-signal from low-signal prospects with equal calibration gap, this fails.
+
+3. **ASM's heuristic gating matches RL-trained gating on production data.** MEM1 trains a gating network to decide write/update/delete. ASM uses hand-crafted rules (meeting→FINISH, high-conf ghost→STATE_CHANGE, low-conf ghost→discard). On real B2B traces, the hand-crafted rules may perform equally because the outcome space is small and well-understood. Falsifiable: if RL-trained gating discovers non-obvious anchor triggers that improve scoring on our test set, this fails.
+
+4. **Multi-session persistence is the dominant factor, not compression method.** The main performance gap comes from having ANY cross-session memory, not from HOW that memory is compressed. A simple cross-session summary should outperform sophisticated within-session compression. Falsifiable: if MEM1 within-session compression + no cross-session memory beats simple cross-session summary, this fails.
+
+5. **Production data exposes MEM1's synthetic-benchmark bias.** MEM1 evaluates on AndroidWorld and WebArena — deterministic GUI tasks. Real B2B outreach has stochastic outcomes (same ICP can ghost or book a meeting). ASM's exception anchors (FM4 high-confidence ghosts) capture this stochasticity; MEM1's gating network, trained on deterministic rewards, may over-prune cautionary signals. Falsifiable: if MEM1-style compression retains exception/warning signals at equal rates on our traces, this fails.

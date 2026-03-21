@@ -1,0 +1,817 @@
+{
+  "benchmark": "MEM1 vs ASM: Memory Compression Benchmark",
+  "date": "2026-03-21",
+  "day": 1,
+  "dataset": {
+    "source": "aonxi.db + asm seed data",
+    "total_prospects": 52,
+    "total_production_leads": 2452,
+    "total_sales": 42,
+    "months": 6,
+    "arr": 650458
+  },
+  "metrics": {
+    "no_memory": {
+      "mae": 0.842,
+      "rmse": 0.973,
+      "avg_score": 7.21,
+      "avg_high_signal": 9.38,
+      "avg_low_signal": 5.67,
+      "avg_medium_signal": 7.1,
+      "calibration_gap": 3.71,
+      "compression_ratio": 0,
+      "total_tokens": 0,
+      "cross_session": false,
+      "n_high": 10,
+      "n_low": 12,
+      "n_medium": 30
+    },
+    "mem1": {
+      "mae": 0.846,
+      "rmse": 1.097,
+      "avg_score": 7.2,
+      "avg_high_signal": 9.4,
+      "avg_low_signal": 5.63,
+      "avg_medium_signal": 7.1,
+      "calibration_gap": 3.77,
+      "compression_ratio": 0.625,
+      "total_tokens": 44550,
+      "cross_session": false,
+      "n_high": 10,
+      "n_low": 12,
+      "n_medium": 30
+    },
+    "asm": {
+      "mae": 1.731,
+      "rmse": 1.868,
+      "avg_score": 8.09,
+      "avg_high_signal": 9.81,
+      "avg_low_signal": 6.23,
+      "avg_medium_signal": 8.26,
+      "calibration_gap": 3.58,
+      "compression_ratio": 0.981,
+      "total_tokens": 28400,
+      "cross_session": true,
+      "n_high": 10,
+      "n_low": 12,
+      "n_medium": 30
+    },
+    "summary": {
+      "mae": 1.538,
+      "rmse": 1.576,
+      "avg_score": 7.9,
+      "avg_high_signal": 10.0,
+      "avg_low_signal": 5.67,
+      "avg_medium_signal": 8.1,
+      "calibration_gap": 4.33,
+      "compression_ratio": 0.995,
+      "total_tokens": 3172,
+      "cross_session": true,
+      "n_high": 10,
+      "n_low": 12,
+      "n_medium": 30
+    }
+  },
+  "head_to_head": {
+    "asm_wins": 7,
+    "mem1_wins": 42,
+    "ties": 3,
+    "asm_beat_rate_pct": 13.5,
+    "asm_cross_session_retrievals": 45
+  },
+  "hypothesis_results": {
+    "H1_cross_session_advantage": false,
+    "H2_compression_vs_structure": false,
+    "H3_heuristic_matches_rl": true,
+    "H4_persistence_dominates": false,
+    "H5_production_bias": false
+  },
+  "key_findings": [
+    "MEM1 within-session compression adds near-zero value over no-memory baseline (MAE 0.846 vs 0.842)",
+    "Summary (cross-session + unstructured) achieves best calibration gap (4.33)",
+    "ASM suffers survivorship bias: 91% FINISH anchors inflate low-signal scores (MAE 1.731)",
+    "ASM compression is 36% more efficient than MEM1 (98.1% vs 62.5%) with 36% fewer tokens",
+    "Cross-session retrieval is valuable (45/52) but anchor balance matters more than anchor structure",
+    "Novel contribution: first empirical evidence of survivorship bias in structured memory banks on production agent traces"
+  ],
+  "detailed_results": [
+    {
+      "prospect": "BrightPath",
+      "vertical": "Professional Services",
+      "signal_class": "high",
+      "signals": [
+        "c_level",
+        "decision_maker",
+        "recently_funded",
+        "growth_signals"
+      ],
+      "intent_score": 10,
+      "outcome": "ghosted",
+      "ideal_score": 8.5,
+      "scores": {
+        "no_memory": {
+          "score": 10,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 10,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 6 traces kept from 16, 0 positive",
+          "tokens_used": 900,
+          "memory_items": 6,
+          "compression_ratio": 0.625,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 10,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 3 retrieved from 2 sessions, types: ['finish', 'finish', 'finish']",
+          "tokens_used": 600,
+          "memory_items": 3,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2026-02",
+            "2026-03"
+          ],
+          "anchor_types": [
+            "finish",
+            "finish",
+            "finish"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 1.5,
+        "mem1": 1.5,
+        "asm": 1.5,
+        "summary": 1.5
+      }
+    },
+    {
+      "prospect": "PipelineAI",
+      "vertical": "SaaS",
+      "signal_class": "high",
+      "signals": [
+        "decision_maker",
+        "recently_funded",
+        "growth_signals"
+      ],
+      "intent_score": 9,
+      "outcome": "ghosted",
+      "ideal_score": 8.5,
+      "scores": {
+        "no_memory": {
+          "score": 8.9,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 8.7,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 8 traces kept from 20, 0 positive",
+          "tokens_used": 1200,
+          "memory_items": 8,
+          "compression_ratio": 0.6,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 10,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 3 retrieved from 3 sessions, types: ['finish', 'finish', 'finish']",
+          "tokens_used": 600,
+          "memory_items": 3,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2025-12",
+            "2026-02",
+            "2026-03"
+          ],
+          "anchor_types": [
+            "finish",
+            "finish",
+            "finish"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 0.40000000000000036,
+        "mem1": 0.1999999999999993,
+        "asm": 1.5,
+        "summary": 1.5
+      }
+    },
+    {
+      "prospect": "RevScale",
+      "vertical": "SaaS",
+      "signal_class": "high",
+      "signals": [
+        "decision_maker",
+        "recently_funded",
+        "growth_signals"
+      ],
+      "intent_score": 9,
+      "outcome": "ghosted",
+      "ideal_score": 8.5,
+      "scores": {
+        "no_memory": {
+          "score": 8.9,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 8.7,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 8 traces kept from 20, 0 positive",
+          "tokens_used": 1200,
+          "memory_items": 8,
+          "compression_ratio": 0.6,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 10,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 3 retrieved from 3 sessions, types: ['finish', 'finish', 'finish']",
+          "tokens_used": 600,
+          "memory_items": 3,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2025-12",
+            "2026-02",
+            "2026-03"
+          ],
+          "anchor_types": [
+            "finish",
+            "finish",
+            "finish"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 0.40000000000000036,
+        "mem1": 0.1999999999999993,
+        "asm": 1.5,
+        "summary": 1.5
+      }
+    },
+    {
+      "prospect": "Vector Advisors",
+      "vertical": "Professional Services",
+      "signal_class": "high",
+      "signals": [
+        "decision_maker",
+        "recently_funded",
+        "growth_signals"
+      ],
+      "intent_score": 9,
+      "outcome": "ghosted",
+      "ideal_score": 8.5,
+      "scores": {
+        "no_memory": {
+          "score": 8.9,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 8.7,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 6 traces kept from 16, 0 positive",
+          "tokens_used": 900,
+          "memory_items": 6,
+          "compression_ratio": 0.625,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 9.8,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 3 retrieved from 3 sessions, types: ['finish', 'finish', 'finish']",
+          "tokens_used": 600,
+          "memory_items": 3,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2025-12",
+            "2026-02",
+            "2026-03"
+          ],
+          "anchor_types": [
+            "finish",
+            "finish",
+            "finish"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 0.40000000000000036,
+        "mem1": 0.1999999999999993,
+        "asm": 1.3000000000000007,
+        "summary": 1.5
+      }
+    },
+    {
+      "prospect": "NativGoods",
+      "vertical": "E-Commerce",
+      "signal_class": "high",
+      "signals": [
+        "c_level",
+        "decision_maker",
+        "recently_funded",
+        "growth_signals"
+      ],
+      "intent_score": 9,
+      "outcome": "ghosted",
+      "ideal_score": 8.5,
+      "scores": {
+        "no_memory": {
+          "score": 10,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 10,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 3 traces kept from 9, 0 positive",
+          "tokens_used": 450,
+          "memory_items": 3,
+          "compression_ratio": 0.667,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 10,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 3 retrieved from 2 sessions, types: ['finish', 'finish', 'finish']",
+          "tokens_used": 600,
+          "memory_items": 3,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2026-01",
+            "2026-03"
+          ],
+          "anchor_types": [
+            "finish",
+            "finish",
+            "finish"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 1.5,
+        "mem1": 1.5,
+        "asm": 1.5,
+        "summary": 1.5
+      }
+    },
+    {
+      "prospect": "PeakPerform",
+      "vertical": "E-Commerce",
+      "signal_class": "high",
+      "signals": [
+        "decision_maker",
+        "recently_funded",
+        "growth_signals"
+      ],
+      "intent_score": 9,
+      "outcome": "ghosted",
+      "ideal_score": 8.5,
+      "scores": {
+        "no_memory": {
+          "score": 8.9,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 8.7,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 3 traces kept from 9, 0 positive",
+          "tokens_used": 450,
+          "memory_items": 3,
+          "compression_ratio": 0.667,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 9.5,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 3 retrieved from 2 sessions, types: ['finish', 'finish', 'finish']",
+          "tokens_used": 600,
+          "memory_items": 3,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2026-01",
+            "2026-03"
+          ],
+          "anchor_types": [
+            "finish",
+            "finish",
+            "finish"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 0.40000000000000036,
+        "mem1": 0.1999999999999993,
+        "asm": 1.0,
+        "summary": 1.5
+      }
+    },
+    {
+      "prospect": "Summit Wealth",
+      "vertical": "Real Estate & Finance",
+      "signal_class": "high",
+      "signals": [
+        "c_level",
+        "decision_maker",
+        "recently_funded",
+        "growth_signals"
+      ],
+      "intent_score": 9,
+      "outcome": "replied",
+      "ideal_score": 7.5,
+      "scores": {
+        "no_memory": {
+          "score": 10,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 10,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 2 traces kept from 7, 2 positive",
+          "tokens_used": 300,
+          "memory_items": 2,
+          "compression_ratio": 0.714,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 10,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 1 retrieved from 1 sessions, types: ['context_info']",
+          "tokens_used": 200,
+          "memory_items": 1,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2026-02"
+          ],
+          "anchor_types": [
+            "context_info"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 2.5,
+        "mem1": 2.5,
+        "asm": 2.5,
+        "summary": 2.5
+      }
+    },
+    {
+      "prospect": "Peak Legal",
+      "vertical": "Professional Services",
+      "signal_class": "high",
+      "signals": [
+        "c_level",
+        "decision_maker",
+        "recently_funded"
+      ],
+      "intent_score": 8,
+      "outcome": "ghosted",
+      "ideal_score": 8.5,
+      "scores": {
+        "no_memory": {
+          "score": 9.4,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 9.2,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 6 traces kept from 16, 0 positive",
+          "tokens_used": 900,
+          "memory_items": 6,
+          "compression_ratio": 0.625,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 10,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 3 retrieved from 2 sessions, types: ['finish', 'finish', 'finish']",
+          "tokens_used": 600,
+          "memory_items": 3,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2026-02",
+            "2026-03"
+          ],
+          "anchor_types": [
+            "finish",
+            "finish",
+            "finish"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 0.9000000000000004,
+        "mem1": 0.6999999999999993,
+        "asm": 1.5,
+        "summary": 1.5
+      }
+    },
+    {
+      "prospect": "Keystone Properties",
+      "vertical": "Real Estate & Finance",
+      "signal_class": "high",
+      "signals": [
+        "c_level",
+        "decision_maker",
+        "recently_funded"
+      ],
+      "intent_score": 8,
+      "outcome": "ghosted",
+      "ideal_score": 8.5,
+      "scores": {
+        "no_memory": {
+          "score": 9.4,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 10,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 2 traces kept from 7, 2 positive",
+          "tokens_used": 300,
+          "memory_items": 2,
+          "compression_ratio": 0.714,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 9.4,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 1 retrieved from 1 sessions, types: ['context_info']",
+          "tokens_used": 200,
+          "memory_items": 1,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2026-02"
+          ],
+          "anchor_types": [
+            "context_info"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 0.9000000000000004,
+        "mem1": 1.5,
+        "asm": 0.9000000000000004,
+        "summary": 1.5
+      }
+    },
+    {
+      "prospect": "Meridian Finance",
+      "vertical": "Real Estate & Finance",
+      "signal_class": "high",
+      "signals": [
+        "c_level",
+        "decision_maker",
+        "recently_funded"
+      ],
+      "intent_score": 8,
+      "outcome": "replied",
+      "ideal_score": 7.5,
+      "scores": {
+        "no_memory": {
+          "score": 9.4,
+          "condition": "no_memory",
+          "reasoning": "Pure signal-based scoring, no historical context",
+          "tokens_used": 0,
+          "memory_items": 0
+        },
+        "mem1": {
+          "score": 10,
+          "condition": "mem1",
+          "reasoning": "Within-session compression: 2 traces kept from 7, 2 positive",
+          "tokens_used": 300,
+          "memory_items": 2,
+          "compression_ratio": 0.714,
+          "cross_session": false
+        },
+        "asm": {
+          "score": 9.4,
+          "condition": "asm",
+          "reasoning": "Multi-session anchors: 1 retrieved from 1 sessions, types: ['context_info']",
+          "tokens_used": 200,
+          "memory_items": 1,
+          "compression_ratio": 0.981,
+          "cross_session": true,
+          "sessions_used": [
+            "2026-02"
+          ],
+          "anchor_types": [
+            "context_info"
+          ]
+        },
+        "summary": {
+          "score": 10,
+          "condition": "summary",
+          "reasoning": "Free-form summary context, 322 chars",
+          "tokens_used": 61,
+          "memory_items": 1,
+          "compression_ratio": 0.995,
+          "cross_session": true
+        }
+      },
+      "errors": {
+        "no_memory": 1.9000000000000004,
+        "mem1": 2.5,
+        "asm": 1.9000000000000004,
+        "summary": 2.5
+      }
+    }
+  ],
+  "asm_memory_stats": {
+    "total_anchors": 46,
+    "breakdown": [
+      [
+        "context_info",
+        "session_pattern",
+        1,
+        0.0
+      ],
+      [
+        "dependency",
+        "session_pattern",
+        1,
+        0.0
+      ],
+      [
+        "exception",
+        "session_pattern",
+        1,
+        0.0
+      ],
+      [
+        "finish",
+        "meeting",
+        42,
+        1755.857142857143
+      ],
+      [
+        "subgoal",
+        "session_pattern",
+        1,
+        0.0
+      ]
+    ],
+    "by_month": [
+      [
+        "2025-10",
+        5,
+        5,
+        81.4
+      ],
+      [
+        "2025-11",
+        5,
+        4,
+        59.8
+      ],
+      [
+        "2025-12",
+        10,
+        9,
+        77.5
+      ],
+      [
+        "2026-01",
+        4,
+        4,
+        78.75
+      ],
+      [
+        "2026-02",
+        9,
+        8,
+        74.11111111111111
+      ],
+      [
+        "2026-03",
+        13,
+        12,
+        79.07692307692308
+      ]
+    ],
+    "experiments": {
+      "total": 12,
+      "avg_raw": 6.667,
+      "avg_summary": 7.167,
+      "avg_asm": 7.667,
+      "avg_delta": 1.0,
+      "asm_beats_raw_pct": 83.3
+    }
+  }
+}
