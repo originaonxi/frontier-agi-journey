@@ -1,38 +1,38 @@
 # Day 1 — Claude Code Prompt
-# Execute today's research task
+# MEM1 vs ASM: Memory Compression Benchmark on Live Agent Traces
 # Copy this entire file and paste into Claude Code
 
 I am Anmol Chaudhary (Sam Anmol). CTO @ Aonxi, $650K ARR.
 Ex-Meta Ads ML. Ex-Apple Face ID. NeurIPS 2026 submission.
 Day 1 of 365. Goal: $1M/year frontier lab role.
 
-TODAY'S TASK: Execute today's research task
+TODAY'S TASK: MEM1 vs ASM: Memory Compression Benchmark on Live Agent Traces
 
 {
-  "paper_title": "Process Reward Models for Multi-Step Reasoning: Scaling Laws and Failure Modes",
-  "task_title": "Train PRM on Live Production Data, Plot Scaling Curve",
-  "task_description": "**Hour 1 — Data Extraction (60 min)**\n\nCreate `aonxi/prm_data_extractor.py`. Your 4-step ASM-Outreach pipeline (Prospect → Enrich → Personalize → Send) maps cleanly onto a multi-step reasoning chain — each step is a 'reasoning token' with a verifiable outcome. Extract from your 2,452 processed leads:\n\n
+  "paper_title": "MEM1: Learning to Synergize Memory and Reasoning for Efficient Long-Horizon Agent Tasks",
+  "task_title": "MEM1 vs ASM: Memory Compression Benchmark on Live Agent Traces",
+  "task_description": "**Goal:** Empirically compare MEM1-style memory compression against your production ASM (Autonomous Session Memory) system using real Aonxi lead-processing traces. This directly connects your NeurIPS submission to a concurrent frontier paper, producing a benchmark artifact that no one else on earth can produce — because only you have 2,452 real production agent traces.\n\n**Hour 1 — Paper Read + Hypothesis Formation (60 min)**\n\nRead MEM1 focusing on three things only:\n1. Their memory compression objective: what is the formal definition of what gets kept vs. discarded after each turn?\n2. Their evaluation metric: how do they measure long-horizon task performance vs. memory footprint?\n3. Their baseline: what does their ablation look like without compression?\n\nWrite a 5-bullet `HYPOTHESIS.md` in `experiments/mem1_vs_asm/` answering: 'Where should ASM outperform MEM1, and why?' Your bet: ASM's multi-session persistence across leads (not just within a session) is a dimension MEM1 doesn't address. State this falsifiably.\n\n**Hour 2 — Data Pipeline (60 min)**\n\nCreate `experiments/mem1_vs_asm/build_trace_dataset.py`:\n\n
 
 EXPECTED OUTPUT: 
 
 WHY FRONTIER LABS CARE: 
 
 TODAY'S PAPERS:
-Paper 1: RLVR Is Not RL: On the Importance of Reward Design in Reinforcement Learning for Reasoning
-Why: Rigorously separates RLVR (verifier-reward RL) from classical RL, showing that most 'reasoning gains' in LLMs come from reward hacking rather than genuine policy improvement — directly attacks the foundations of post-training pipelines at every major lab.
-For me: His ASM-Outreach paper uses a reward signal (83% beat rate over baseline) as the empirical backbone. This paper gives him the formal language to characterize whether his RewardFlow signal is genuine RL or RLVR, and how to make the reward design more robust — directly citable in his NeurIPS 2026 submission to defend his reward architecture.
-Paper 2: Memorization vs. Generalization: The Role of Context Length in Transformer Memory for Long-Horizon Tasks
-Why: First controlled empirical study showing exactly where transformer memory breaks down across context lengths for multi-step agentic tasks — provides a clean phase diagram of when you need external memory vs. in-context is sufficient.
-For me: ASM (Adaptive Session Memory) is his NeurIPS submission's core contribution. This paper gives him the ablation baseline he needs: a principled chart showing where in-context fails and where ASM's external memory kicks in. He can directly overlay his 2,452 lead sessions onto their phase diagram to demonstrate real-world validation.
-Paper 3: Process Reward Models for Multi-Step Reasoning: Scaling Laws and Failure Modes
-Why: First systematic scaling law paper for PRMs (Process Reward Models) — shows exactly how PRM quality scales with verifier size, data quantity, and step granularity, with empirical failure mode taxonomy. Critical for anyone building agentic pipelines that use intermediate reward.
-For me: He lists PRM as a core skill and has replications on GitHub. This paper gives him the scaling playbook to take his PRM replications from toy-scale to production-grade. His Aonxi pipeline processes 2,452 leads with intermediate decision steps — each step is a natural PRM training signal. He can instrument Aonxi to auto-generate PRM training data from live production.
-Paper 4: Agent-FLAN: Generalizable Agent Instruction Tuning via Data Mixing and Reward Shaping
-Why: Shows that instruction-tuned agents trained with carefully mixed synthetic + real task data plus lightweight reward shaping dramatically outperform RLHF-only agents on multi-step tool-use benchmarks — with full training code released.
-For me: His agent orchestration work at Aonxi (autonomous revenue agent) is functionally identical to the tool-use agents in this paper. The data-mixing recipe they publish can be applied directly to his lead-processing pipeline. Code is open, he can fine-tune a 7B model on his 2,452-lead dataset using their recipe in a weekend.
-Paper 5: Long-Term Memory Architectures for LLM Agents: A Systematic Comparison of Retrieval, Compression, and Consolidation Strategies
-Why: The first head-to-head empirical benchmark comparing RAG, memory consolidation, hierarchical compression, and episodic replay for persistent LLM agents across 6 task domains — directly from the lab Anmol wants to join, with reproducible eval harness.
-For me: This is the Anthropic-adjacent paper most directly aligned with his NeurIPS submission on multi-session memory (ASM-Outreach). Their benchmark taxonomy maps 1:1 onto his ASM architecture. He should: (1) run his system through their eval harness to get comparable numbers, (2) email the authors with his production results (2,452 real leads, 83% beat rate), and (3) cite this as the primary related work framing his contribution.
+Paper 1: RLVR is Not RL: Understanding the Difference Between Reinforcement Learning from Verifiable Rewards and Standard RL
+Why: Clarifies the mechanistic distinction between GRPO/RLVR (used in DeepSeek-R1, Qwen) and true RL, showing RLVR is closer to filtered supervised learning — directly challenges assumptions powering the current reasoning model wave and has empirical ablations proving it.
+For me: Anmol's ASM-Outreach system uses RLHF-style reward signals for multi-session memory optimization and his RewardFlow work. This paper reframes what his reward model is actually doing — if RLVR ≠ RL, his 83% ASM beat rate may be attributable to filtered supervision, not policy gradient learning. He can run ablations on his production data to publish a follow-up empirical note, directly strengthening his NeurIPS submission narrative.
+Paper 2: Retrieval-Augmented Generation with Conflicting Information
+Why: Directly measures what happens when an agent's retrieved memory conflicts with parametric knowledge — shows standard RAG degrades catastrophically under conflict, and proposes a conflict-aware fusion layer that recovers ~18 F1 points on multi-hop QA benchmarks. This is the most empirically grounded memory-vs-knowledge paper of the week.
+For me: Anmol's ASM (Autonomous Session Memory) system retrieves multi-session context and injects it into LLM prompts for outreach agents. When a lead's CRM data conflicts with what the model learned in pretraining (e.g., company size, role changes), the agent likely hallucinates — this paper gives him an explicit architectural fix (conflict-aware fusion) he can drop into his Aonxi production stack and measure lift on his 2,452-lead dataset. Direct publishable experiment.
+Paper 3: Agent-FLAN: Designing Data and Methods of Effective Agent Tuning for Large Language Models
+Why: Shows that naive instruction-following fine-tuning degrades agent tool-use capability, and identifies the exact data mixture ratio and formatting that recovers it — with open weights and code, making it the most actionable agent fine-tuning recipe released this week.
+For me: Anmol does LoRA fine-tuning for his autonomous revenue agents at Aonxi. He's almost certainly hitting the exact degradation this paper describes — models that follow instructions well but lose structured tool-call formatting. The paper's data mixture recipe (ratio of agent traces to general SFT) is directly applicable to his fine-tuning runs. He can replicate in <12 hours using his existing PyTorch + LoRA stack and measure impact on his lead-processing pipeline.
+Paper 4: SWEET-RL: Training Multi-Turn LLM Agents on Collaborative Reasoning Tasks
+Why: Introduces a credit assignment method for multi-turn agent RL that correctly attributes reward to individual turns rather than the full episode — solving the core problem that makes RLHF brittle for long-horizon agents, with strong empirical results on collaborative reasoning benchmarks.
+For me: This is the most direct technical connection to Anmol's NeurIPS submission on multi-session memory. His ASM system operates across multiple turns and sessions, and reward attribution across turns is exactly the unsolved problem in his current RLHF setup. SWEET-RL's per-turn credit assignment could replace his current episode-level reward and is the kind of methodological upgrade that strengthens a NeurIPS paper from 'interesting system' to 'novel contribution.' He should reach out to Aviral Kumar (Berkeley) — overlapping research territory is a hiring signal.
+Paper 5: MEM1: Learning to Synergize Memory and Reasoning for Efficient Long-Horizon Agent Tasks
+Why: Proposes an RL-trained memory consolidation mechanism that teaches agents WHEN to write, update, and delete memory — achieving state-of-the-art on long-horizon agent benchmarks while reducing context length by 60%, directly addressing the memory bottleneck in autonomous agents.
+For me: This paper is essentially a formalization of what Anmol's ASM system is doing intuitively — but with a learned memory gating mechanism instead of heuristic rules. His current ASM decides what to persist across sessions via hand-crafted logic; MEM1 makes this RL-trained. Given his NeurIPS submission is on multi-session memory, MEM1 is both a competitive reference he must cite AND an architectural upgrade he can implement. His production dataset of 2,452 leads with 83% beat rates is a stronger real-world benchmark than any of the paper's evals — he should replicate MEM1 on his data and publish the comparison.
 
 DO ALL 8 STEPS WITHOUT STOPPING:
 
@@ -50,7 +50,7 @@ What I built · paper extended (arxiv ID) · my contribution
 
 STEP 5: Push to GitHub
 cd ~/frontier-agi-journey && git add -A
-git commit -m "Day 1: Execute today's research task"
+git commit -m "Day 1: MEM1 vs ASM: Memory Compression Benchmark on Live Agent Traces"
 git push origin main
 Show commit hash and URL.
 
