@@ -1,3 +1,4 @@
 {
-  "task_description": "{\n  \"paper_title\": \"RLVR is Not RL: Understanding the Role of Verifiable Rewards in Language Model Alignment\",\n  \"task_title\": \"Test RLVR Distribution Sharpening on Live Production Agent Data\",\n  \"task_description\": \"## Step-by-Step Execution Plan\\n\\n### Hour 1 (0:00\u20131:00): Set up experiment scaffold\\n\\nCreate `experiments/rlvr_distribution_analysis/` with:\\n\\n"
+  "task_title": "Execute today's research task",
+  "task_description": "{\n  \"paper_title\": \"Process Reward Models for Multi-Step Reasoning: Scaling Laws and Failure Modes\",\n  \"task_title\": \"Train PRM on Live Production Data, Plot Scaling Curve\",\n  \"task_description\": \"**Hour 1 \u2014 Data Extraction (60 min)**\\n\\nCreate `aonxi/prm_data_extractor.py`. Your 4-step ASM-Outreach pipeline (Prospect \u2192 Enrich \u2192 Personalize \u2192 Send) maps cleanly onto a multi-step reasoning chain \u2014 each step is a 'reasoning token' with a verifiable outcome. Extract from your 2,452 processed leads:\\n\\n"
 }
