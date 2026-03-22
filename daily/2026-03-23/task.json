@@ -1,0 +1,4 @@
+{
+  "task_title": "Binary vs Dense Reward Ablation on 200 Live Leads",
+  "task_description": "{\n  \"paper_title\": \"RLVR is Not RL: Understanding the Role of Verifiable Rewards in LLM Post-Training\",\n  \"task_title\": \"Binary vs Dense Reward Ablation on 200 Live Leads\",\n  \"task_description\": \"**Hour 1 \u2014 Setup & Framing (60 min)**\\n\\nCreate `experiments/rlvr_vs_dense_reward/` in your GitHub repo. Write `README.md` first \u2014 this forces clarity. The README must state the hypothesis in one sentence: 'Binary conversion outcome (RLVR-style verifiable reward) matches or exceeds dense RewardFlow shaping on outreach conversion.' Define your three reward conditions explicitly in code:\\n\\n"
+}
